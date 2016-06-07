@@ -18,8 +18,10 @@ class Route
   # use pattern to pull out route params (save for later?)
   # instantiate controller and call controller action
   def run(req, res)
-    route_params = {}
-    ControllerBase.new(req, res, {}).invoke_action(action_name)
+    match_data = @pattern.match(req.path)
+    params = {}
+    match_data.names.each { |name| params[name] = match_data[name] }
+    @controller_class.new(req, res, params).invoke_action(action_name)
   end
 end
 
@@ -45,7 +47,7 @@ class Router
   # when called add route
   [:get, :post, :put, :delete].each do |http_method|
     define_method(http_method) do |pattern, controller_class, action_name|
-      add_route(http_method, pattern, controller_class, action_name)
+      add_route(pattern, http_method, controller_class, action_name)
     end
   end
 
@@ -57,6 +59,11 @@ class Router
   # either throw 404 or call run on a matched route
   def run(req, res)
     route = match(req)
-    route ? route.run(req, res) : res.status = "404 no matching route"
+    if route
+      route.run(req, res)
+    else
+      res.status = 404
+      res.write "No route matches"
+    end
   end
 end
