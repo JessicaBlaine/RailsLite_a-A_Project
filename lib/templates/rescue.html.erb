@@ -1,0 +1,11 @@
+<h1><%= res.status %> Internal Server Error</h1>
+<p>
+  <%= e.class %>:
+  <%=  e.message %>
+</p>
+
+<ul>
+  <% e.backtrace_locations.each do |bt| %>
+    <li><%= bt %></li>
+  <% end %>
+</ul>

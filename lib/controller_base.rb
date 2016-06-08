@@ -2,6 +2,7 @@ require 'active_support'
 require 'active_support/core_ext'
 require 'erb'
 require_relative './session'
+require_relative './flash'
 
 class ControllerBase
   attr_reader :req, :res, :params
@@ -13,6 +14,7 @@ class ControllerBase
     @params = params
     @already_built_response = false
     @session = Session.new(req)
+    @flash = Flash.new(req)
   end
 
   # Helper method to alias @already_built_response
@@ -51,6 +53,10 @@ class ControllerBase
   # method exposing a `Session` object
   def session
     @session
+  end
+
+  def flash
+    @flash
   end
 
   # use this with the router to call action_name (:index, :show, :create...)
