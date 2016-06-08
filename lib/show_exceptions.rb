@@ -22,7 +22,7 @@ class ShowExceptions
     res = Rack::Response.new
     res.status = "500"
     res["Content-type"] = "text/html"
-    
+
     erb = ERB.new(File.read("lib/templates/rescue.html.erb"))
     res.write(erb.result(binding))
 
